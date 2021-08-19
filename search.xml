@@ -1,0 +1,28 @@
+<?xml version="1.0" encoding="utf-8"?>
+<search>
+  <entry>
+    <title>Android开发-Apk安装步骤</title>
+    <url>/2021/08/19/Android-apk-install/</url>
+    <content><![CDATA[<p>Apk 安装的主要步骤：</p>
+<ol>
+<li>将 apk 文件复制到 <code>data/app</code> 目录</li>
+<li>解析 apk 信息</li>
+<li>dexopt 操作</li>
+<li>更新权限信息</li>
+<li>完成安装，发送 <code>Intent.Action_PACKAGE_ADDED</code> 广播</li>
+</ol>
+]]></content>
+      <tags>
+        <tag>Android</tag>
+      </tags>
+  </entry>
+  <entry>
+    <title>new</title>
+    <url>/2021/08/18/new/</url>
+    <content><![CDATA[<p>新的篇章~</p>
+]]></content>
+      <tags>
+        <tag>Life</tag>
+      </tags>
+  </entry>
+</search>
