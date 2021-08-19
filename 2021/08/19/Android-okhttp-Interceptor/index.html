@@ -20,15 +20,15 @@
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
 
 <script class="next-config" data-name="main" type="application/json">{"hostname":"geekbug.xyz","root":"/","images":"/images","scheme":"Pisces","version":"8.7.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":false,"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
-<meta name="description" content="1. RetryAndFollowUpInterceptor (重定向拦截器)客户端向服务器发送一个请求，获取对应的资源，服务器收到请求后，发现请求的这个资源实际放在另一个位置，于是服务器在返回的响应头的Location字段中写入那个请求资源的正确的URL，并设置reponse的状态码为30x 。  1、创建一个 StreamAllocation。 2、调用下一个chain 。 3、判断是否重定向">
+<meta name="description" content="1. RetryAndFollowUpInterceptor (重定向拦截器)客户端向服务器发送一个请求，获取对应的资源，服务器收到请求后，发现请求的这个资源实际放在另一个位置，于是服务器在返回的响应头的Location字段中写入那个请求资源的正确的URL，并设置reponse的状态码为30x 。  创建一个 StreamAllocation。  调用下一个chain 。  判断是否重定向。重定向">
 <meta property="og:type" content="article">
 <meta property="og:title" content="Android开发-OkHttp拦截器">
 <meta property="og:url" content="http://geekbug.xyz/2021/08/19/Android-okhttp-Interceptor/index.html">
 <meta property="og:site_name" content="GeekBug Code">
-<meta property="og:description" content="1. RetryAndFollowUpInterceptor (重定向拦截器)客户端向服务器发送一个请求，获取对应的资源，服务器收到请求后，发现请求的这个资源实际放在另一个位置，于是服务器在返回的响应头的Location字段中写入那个请求资源的正确的URL，并设置reponse的状态码为30x 。  1、创建一个 StreamAllocation。 2、调用下一个chain 。 3、判断是否重定向">
+<meta property="og:description" content="1. RetryAndFollowUpInterceptor (重定向拦截器)客户端向服务器发送一个请求，获取对应的资源，服务器收到请求后，发现请求的这个资源实际放在另一个位置，于是服务器在返回的响应头的Location字段中写入那个请求资源的正确的URL，并设置reponse的状态码为30x 。  创建一个 StreamAllocation。  调用下一个chain 。  判断是否重定向。重定向">
 <meta property="og:locale" content="zh_CN">
 <meta property="article:published_time" content="2021-08-19T10:38:56.000Z">
-<meta property="article:modified_time" content="2021-08-19T10:39:52.185Z">
+<meta property="article:modified_time" content="2021-08-19T10:43:44.035Z">
 <meta property="article:author" content="GeekBug">
 <meta property="article:tag" content="Android">
 <meta name="twitter:card" content="summary">
@@ -248,7 +248,7 @@
       <span class="post-meta-item-text">发表于</span>
       
 
-      <time title="创建时间：2021-08-19 18:38:56 / 修改时间：18:39:52" itemprop="dateCreated datePublished" datetime="2021-08-19T18:38:56+08:00">2021-08-19</time>
+      <time title="创建时间：2021-08-19 18:38:56 / 修改时间：18:43:44" itemprop="dateCreated datePublished" datetime="2021-08-19T18:38:56+08:00">2021-08-19</time>
     </span>
 
   
@@ -269,24 +269,46 @@
     
     <div class="post-body" itemprop="articleBody">
         <h3 id="1-RetryAndFollowUpInterceptor-重定向拦截器"><a href="#1-RetryAndFollowUpInterceptor-重定向拦截器" class="headerlink" title="1. RetryAndFollowUpInterceptor (重定向拦截器)"></a>1. RetryAndFollowUpInterceptor (重定向拦截器)</h3><p>客户端向服务器发送一个请求，获取对应的资源，服务器收到请求后，发现请求的这个资源实际放在另一个位置，于是服务器在返回的响应头的Location字段中写入那个请求资源的正确的URL，并设置reponse的状态码为30x 。</p>
-<blockquote>
-<p>1、创建一个 StreamAllocation。 2、调用下一个chain 。 3、判断是否重定向。重定向会对request做一些修改，返回新的request，否则会返回null。 4、followUp == null 无重定向，释放资源，直接返回response。 5、比较重定向前后的 host、port、scheme是否一致，一致的话复用，否则重新创建 StreamAllocation。 6、通过 while (true) ，重复步骤 2</p>
-</blockquote>
+<ol>
+<li>创建一个 StreamAllocation。 </li>
+<li>调用下一个chain 。 </li>
+<li>判断是否重定向。重定向会对request做一些修改，返回新的request，否则会返回null。</li>
+<li>followUp == null 无重定向，释放资源，直接返回response。</li>
+<li>比较重定向前后的 host、port、scheme是否一致，一致的话复用，否则重新创建 StreamAllocation。</li>
+<li>通过 while (true) ，重复步骤 2</li>
+</ol>
 <h3 id="2-BridgeInterceptor-桥接拦截器"><a href="#2-BridgeInterceptor-桥接拦截器" class="headerlink" title="2. BridgeInterceptor (桥接拦截器)"></a>2. BridgeInterceptor (桥接拦截器)</h3><p>负责把用户构造的请求转换为发送到服务器的请求、把服务器返回的响应转换为用户友好的响应。</p>
-<blockquote>
-<p>1、如果这个请求有请求体，就添加 Content-Type, Content-Length等。 2、如果这个请求没有 Host，就通过 url 来获取 Host 值添加到 Header中。 3、如果这个请求没有接收的数据类型Accept-Encoding，且没指定接收的数据范围，就添加默认接受格式为 gzip。 5、去 CookieJar 中根据 url 查询 Cookie 添加到 Header。 6、如果当前没有，就添加 User-Agent 信息。 发起请求后： 7、解析响应 Header 中的 Cookie 8、如果想要数据的格式是 gzip，就创建 GzipSource 进行解压，同时移除 Content-Encoding 和 Content-Length</p>
-</blockquote>
-<h3 id="3-CacheInterceptor-缓存拦截器"><a href="#3-CacheInterceptor-缓存拦截器" class="headerlink" title="3. CacheInterceptor (缓存拦截器)"></a>3. CacheInterceptor (缓存拦截器)</h3><blockquote>
-<p>1、根据Request和之前缓存的Response得到CacheStrategy 2、根据CacheStrategy决定是请求网络还是直接返回缓存 3、如果 step 2中决定请求网络，则在这一步将返回的网络响应和本地缓存对比，对本地缓存进行改增删操作</p>
-</blockquote>
+<ol>
+<li>如果这个请求有请求体，就添加 Content-Type, Content-Length等。</li>
+<li>如果这个请求没有 Host，就通过 url 来获取 Host 值添加到 Header中。 </li>
+<li>如果这个请求没有接收的数据类型Accept-Encoding，且没指定接收的数据范围，就添加默认接受格式为 gzip。</li>
+<li>去 CookieJar 中根据 url 查询 Cookie 添加到 Header。</li>
+<li>如果当前没有，就添加 User-Agent 信息。 发起请求后： </li>
+<li>解析响应 Header 中的 Cookie </li>
+<li>如果想要数据的格式是 gzip，就创建 GzipSource 进行解压，同时移除 Content-Encoding 和 Content-Length</li>
+</ol>
+<h3 id="3-CacheInterceptor-缓存拦截器"><a href="#3-CacheInterceptor-缓存拦截器" class="headerlink" title="3. CacheInterceptor (缓存拦截器)"></a>3. CacheInterceptor (缓存拦截器)</h3><ol>
+<li>根据Request和之前缓存的Response得到CacheStrategy </li>
+<li>根据CacheStrategy决定是请求网络还是直接返回缓存 </li>
+<li>如果 step 2中决定请求网络，则在这一步将返回的网络响应和本地缓存对比，对本地缓存进行改增删操作</li>
+</ol>
 <h3 id="4-ConnectInterceptor-连接拦截器"><a href="#4-ConnectInterceptor-连接拦截器" class="headerlink" title="4. ConnectInterceptor (连接拦截器)"></a>4. ConnectInterceptor (连接拦截器)</h3><p>okhttp内部维护了可以重复使用的 Socket 连接池，减少握手次数，加快请求响应。</p>
-<blockquote>
-<p>1、连接 RealConnection 是对 Socket 的封装。 2、OkHttp 的连接复用主要是通过 StreamAllocation 来实现的，每个连接上持有一个。 3、StreamAllocation 引用的列表，以此来标识当前连接是否空闲。它里面维护了List<Reference>的引用。List中StreamAllocation的数量也就是socket被引用的计数，如果计数为0的话，说明此连接没有被使用就是空闲的，需要通过下文的算法实现回收；如果计数不为0，则表示上层代码仍然引用，就不需要关闭连接。 4、判断连接是否可以重用，除了比较连接当前的 host，也可以比较路由信息。 5、连接池在添加新连接时会运行清理任务，默认最多空闲连接为 5，最长空闲时间为 5 分钟。</p>
-</blockquote>
+<ol>
+<li>连接 RealConnection 是对 Socket 的封装。</li>
+<li>OkHttp 的连接复用主要是通过 StreamAllocation 来实现的，每个连接上持有一个。</li>
+<li>StreamAllocation 引用的列表，以此来标识当前连接是否空闲。它里面维护了List<Reference>的引用。List中StreamAllocation的数量也就是socket被引用的计数，如果计数为0的话，说明此连接没有被使用就是空闲的，需要通过下文的算法实现回收；如果计数不为0，则表示上层代码仍然引用，就不需要关闭连接。</li>
+<li>判断连接是否可以重用，除了比较连接当前的 host，也可以比较路由信息。 </li>
+<li>连接池在添加新连接时会运行清理任务，默认最多空闲连接为 5，最长空闲时间为 5 分钟。</li>
+</ol>
 <h3 id="5-CallServerInterceptor-读写拦截器"><a href="#5-CallServerInterceptor-读写拦截器" class="headerlink" title="5. CallServerInterceptor(读写拦截器)"></a>5. CallServerInterceptor(读写拦截器)</h3><p>负责实现网络 IO，所有拦截器都要依赖它才能拿到响应数据。</p>
-<blockquote>
-<p>1、CallServerInterceptor 首先会将请求中的 header 写给服务器。 2、如果有请求体的话，会再将 body 发送给服务器。 3、最后通过httpCodec.finishRequest() 结束 http 请求的发送。 4、然后从连接中读取服务器的响应，并构造 Response。 5、如果请求的 header或服务器响应的 header 中，Connection 的值为 close，就关闭连接。 6、最后返回 Response。</p>
-</blockquote>
+<ol>
+<li>CallServerInterceptor 首先会将请求中的 header 写给服务器。</li>
+<li>如果有请求体的话，会再将 body 发送给服务器。 </li>
+<li>最后通过httpCodec.finishRequest() 结束 http 请求的发送。 </li>
+<li>然后从连接中读取服务器的响应，并构造 Response。</li>
+<li>如果请求的 header或服务器响应的 header 中，Connection 的值为 close，就关闭连接。</li>
+<li>最后返回 Response。</li>
+</ol>
 
     </div>
 
