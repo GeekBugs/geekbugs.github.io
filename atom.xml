@@ -6,7 +6,7 @@
   <link href="http://geekbug.xyz/atom.xml" rel="self"/>
   
   <link href="http://geekbug.xyz/"/>
-  <updated>2021-08-19T09:14:40.826Z</updated>
+  <updated>2021-08-19T10:30:23.840Z</updated>
   <id>http://geekbug.xyz/</id>
   
   <author>
@@ -15,6 +15,31 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>Android开发-App启动流程</title>
+    <link href="http://geekbug.xyz/2021/08/19/Android-app-start/"/>
+    <id>http://geekbug.xyz/2021/08/19/Android-app-start/</id>
+    <published>2021-08-19T10:22:25.000Z</published>
+    <updated>2021-08-19T10:30:23.840Z</updated>
+    
+    <content type="html"><![CDATA[<p>App的启动流程：</p><ol><li>点击桌面 App 图标，Launcher 进程采用 Binder IPC 向 system_server 进程发起 startActivity 请求；</li><li>system_server 进程接收到请求后，向 zygote 进程发起创建进程的请求；</li><li>Zygote 进程 fork 出新的子进程，即 App 进程；</li><li>App 进程，通过 Binder IPC 向 system_server 进程发起 attachApplication 请求；</li><li>system_server 进程在收到请求后，进行一系列准备工作后，再通过 binder IPC 向 App 进程发送 scheduleLaunchActivity 请求；</li><li>App 进程的 binder 线程 (ApplicationThread) 在收到请求后，通过 handler 向主线程发送 LAUNCH_ACTIVITY 消息；</li><li>主线程在收到 Message 后，通过发射机制创建目标 Activity，并回调 Activity.onCreate() 等方法；</li><li>App 正式启动，开始进入 Activity 生命周期，执行完 onCreate/onStart/onResume 方法，UI 渲染结束后便可以看到 App 的主界面。</li></ol>]]></content>
+    
+    
+      
+      
+    <summary type="html">&lt;p&gt;App的启动流程：&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;点击桌面 App 图标，Launcher 进程采用 Binder IPC 向 system_server 进程发起 startActivity 请求；&lt;/li&gt;
+&lt;li&gt;system_server 进程接收到请求后，向 zygo</summary>
+      
+    
+    
+    
+    
+    <category term="Android" scheme="http://geekbug.xyz/tags/Android/"/>
+    
+  </entry>
   
   <entry>
     <title>Android开发-Apk安装步骤</title>

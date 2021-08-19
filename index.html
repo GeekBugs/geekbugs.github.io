@@ -162,7 +162,7 @@
   <nav class="site-state">
       <div class="site-state-item site-state-posts">
         <a href="/archives/">
-          <span class="site-state-item-count">2</span>
+          <span class="site-state-item-count">3</span>
           <span class="site-state-item-name">日志</span>
         </a>
       </div>
@@ -209,6 +209,81 @@
 
 
     <div class="main-inner index posts-expand">
+
+    
+
+
+<div class="post-block">
+  
+  
+
+  <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="">
+    <link itemprop="mainEntityOfPage" href="http://geekbug.xyz/2021/08/19/Android-app-start/">
+
+    <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
+      <meta itemprop="image" content="/images/avatar.jpg">
+      <meta itemprop="name" content="GeekBug">
+      <meta itemprop="description" content="Be the change you want to see in the world.">
+    </span>
+
+    <span hidden itemprop="publisher" itemscope itemtype="http://schema.org/Organization">
+      <meta itemprop="name" content="GeekBug Code">
+    </span>
+      <header class="post-header">
+        <h2 class="post-title" itemprop="name headline">
+          <a href="/2021/08/19/Android-app-start/" class="post-title-link" itemprop="url">Android开发-App启动流程</a>
+        </h2>
+
+        <div class="post-meta-container">
+          <div class="post-meta">
+    <span class="post-meta-item">
+      <span class="post-meta-item-icon">
+        <i class="far fa-calendar"></i>
+      </span>
+      <span class="post-meta-item-text">发表于</span>
+      
+
+      <time title="创建时间：2021-08-19 18:22:25 / 修改时间：18:30:23" itemprop="dateCreated datePublished" datetime="2021-08-19T18:22:25+08:00">2021-08-19</time>
+    </span>
+
+  
+</div>
+
+        </div>
+      </header>
+
+    
+    
+    
+    <div class="post-body" itemprop="articleBody">
+          <p>App的启动流程：</p>
+<ol>
+<li>点击桌面 App 图标，Launcher 进程采用 Binder IPC 向 system_server 进程发起 startActivity 请求；</li>
+<li>system_server 进程接收到请求后，向 zygote 进程发起创建进程的请求；</li>
+<li>Zygote 进程 fork 出新的子进程，即 App 进程；</li>
+<li>App 进程，通过 Binder IPC 向 system_server 进程发起 attachApplication 请求；</li>
+<li>system_server 进程在收到请求后，进行一系列准备工作后，再通过 binder IPC 向 App 进程发送 scheduleLaunchActivity 请求；</li>
+<li>App 进程的 binder 线程 (ApplicationThread) 在收到请求后，通过 handler 向主线程发送 LAUNCH_ACTIVITY 消息；</li>
+<li>主线程在收到 Message 后，通过发射机制创建目标 Activity，并回调 Activity.onCreate() 等方法；</li>
+<li>App 正式启动，开始进入 Activity 生命周期，执行完 onCreate/onStart/onResume 方法，UI 渲染结束后便可以看到 App 的主界面。</li>
+</ol>
+
+      
+    </div>
+
+    
+    
+    
+
+    <footer class="post-footer">
+        <div class="post-eof"></div>
+      
+    </footer>
+  </article>
+</div>
+
+
+
 
     
 
