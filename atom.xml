@@ -1,7 +1,7 @@
 <?xml version="1.0" encoding="utf-8"?>
 <feed xmlns="http://www.w3.org/2005/Atom">
   <title>GeekBug Code</title>
-  <icon>http://geekbug.xyz/icon.png</icon>
+  
   
   <link href="http://geekbug.xyz/atom.xml" rel="self"/>
   
@@ -23,19 +23,18 @@
     <published>2021-08-19T09:10:29.000Z</published>
     <updated>2021-08-19T09:14:40.826Z</updated>
     
+    <content type="html"><![CDATA[<p>Apk 安装的主要步骤：</p><ol><li>将 apk 文件复制到 <code>data/app</code> 目录</li><li>解析 apk 信息</li><li>dexopt 操作</li><li>更新权限信息</li><li>完成安装，发送 <code>Intent.Action_PACKAGE_ADDED</code> 广播</li></ol>]]></content>
+    
     
       
       
-        
-        
     <summary type="html">&lt;p&gt;Apk 安装的主要步骤：&lt;/p&gt;
 &lt;ol&gt;
 &lt;li&gt;将 apk 文件复制到 &lt;code&gt;data/app&lt;/code&gt; 目录&lt;/li&gt;
 &lt;li&gt;解析 apk 信息&lt;/li&gt;
 &lt;li&gt;dexopt 操作&lt;/li&gt;
 &lt;li&gt;更新权限信息&lt;/li&gt;
-&lt;li&gt;完成安装，发送</summary>
-        
+&lt;li&gt;完成安装，发送 &lt;co</summary>
       
     
     
@@ -52,14 +51,13 @@
     <published>2021-08-18T09:55:25.000Z</published>
     <updated>2021-08-18T09:55:52.190Z</updated>
     
+    <content type="html"><![CDATA[<p>新的篇章~</p>]]></content>
+    
     
       
       
-        
-        
     <summary type="html">&lt;p&gt;新的篇章~&lt;/p&gt;
 </summary>
-        
       
     
     
