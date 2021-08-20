@@ -103,4 +103,21 @@
         <tag>Android</tag>
       </tags>
   </entry>
+  <entry>
+    <title>Android开发-EventBus流程</title>
+    <url>/2021/08/20/Android-EventBus/</url>
+    <content><![CDATA[<p>最近我对EventBus源码进行了分析，并绘制了流程图：</p>
+<ol>
+<li><p>EventBus register流程：</p>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNly1gtnckrg6w3j60fa0qljse02.jpg"></p>
+</li>
+<li><p>EventBus post流程：</p>
+</li>
+</ol>
+<p><img src="https://tva1.sinaimg.cn/large/008i3skNly1gtncktgjh3j60fy12atad02.jpg"></p>
+]]></content>
+      <tags>
+        <tag>Android</tag>
+      </tags>
+  </entry>
 </search>
