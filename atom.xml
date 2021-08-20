@@ -6,7 +6,7 @@
   <link href="http://geekbug.xyz/atom.xml" rel="self"/>
   
   <link href="http://geekbug.xyz/"/>
-  <updated>2021-08-20T08:45:49.693Z</updated>
+  <updated>2021-08-20T08:57:56.121Z</updated>
   <id>http://geekbug.xyz/</id>
   
   <author>
@@ -21,7 +21,7 @@
     <link href="http://geekbug.xyz/2021/08/20/Android-EventBus/"/>
     <id>http://geekbug.xyz/2021/08/20/Android-EventBus/</id>
     <published>2021-08-20T08:43:24.000Z</published>
-    <updated>2021-08-20T08:45:49.693Z</updated>
+    <updated>2021-08-20T08:57:56.121Z</updated>
     
     <content type="html"><![CDATA[<p>最近我对EventBus源码进行了分析，并绘制了流程图：</p><ol><li><p>EventBus register流程：</p><p><img src="https://tva1.sinaimg.cn/large/008i3skNly1gtnckrg6w3j60fa0qljse02.jpg"></p></li><li><p>EventBus post流程：</p></li></ol><p><img src="https://tva1.sinaimg.cn/large/008i3skNly1gtncktgjh3j60fy12atad02.jpg"></p>]]></content>
     
@@ -36,6 +36,8 @@
     
     
     
+    <category term="Android" scheme="http://geekbug.xyz/categories/Android/"/>
+    
     
     <category term="Android" scheme="http://geekbug.xyz/tags/Android/"/>
     
@@ -46,7 +48,7 @@
     <link href="http://geekbug.xyz/2021/08/20/Android-Retrofit-process/"/>
     <id>http://geekbug.xyz/2021/08/20/Android-Retrofit-process/</id>
     <published>2021-08-20T07:06:17.000Z</published>
-    <updated>2021-08-20T07:10:57.583Z</updated>
+    <updated>2021-08-20T08:58:08.567Z</updated>
     
     <content type="html"><![CDATA[<p>最近我将Retrofit源码进行了剖析，并做了流程图如下：</p><p><img src="https://tva1.sinaimg.cn/large/008i3skNly1gtn9u2z99xj60qy0w70uw02.jpg"></p>]]></content>
     
@@ -60,6 +62,8 @@
     
     
     
+    <category term="Android" scheme="http://geekbug.xyz/categories/Android/"/>
+    
     
     <category term="Android" scheme="http://geekbug.xyz/tags/Android/"/>
     
@@ -70,7 +74,7 @@
     <link href="http://geekbug.xyz/2021/08/19/Android-okhttp-Interceptor/"/>
     <id>http://geekbug.xyz/2021/08/19/Android-okhttp-Interceptor/</id>
     <published>2021-08-19T10:38:56.000Z</published>
-    <updated>2021-08-19T10:43:44.035Z</updated>
+    <updated>2021-08-20T08:58:01.344Z</updated>
     
     <content type="html"><![CDATA[<h3 id="1-RetryAndFollowUpInterceptor-重定向拦截器"><a href="#1-RetryAndFollowUpInterceptor-重定向拦截器" class="headerlink" title="1. RetryAndFollowUpInterceptor (重定向拦截器)"></a>1. RetryAndFollowUpInterceptor (重定向拦截器)</h3><p>客户端向服务器发送一个请求，获取对应的资源，服务器收到请求后，发现请求的这个资源实际放在另一个位置，于是服务器在返回的响应头的Location字段中写入那个请求资源的正确的URL，并设置reponse的状态码为30x 。</p><ol><li>创建一个 StreamAllocation。 </li><li>调用下一个chain 。 </li><li>判断是否重定向。重定向会对request做一些修改，返回新的request，否则会返回null。</li><li>followUp == null 无重定向，释放资源，直接返回response。</li><li>比较重定向前后的 host、port、scheme是否一致，一致的话复用，否则重新创建 StreamAllocation。</li><li>通过 while (true) ，重复步骤 2</li></ol><h3 id="2-BridgeInterceptor-桥接拦截器"><a href="#2-BridgeInterceptor-桥接拦截器" class="headerlink" title="2. BridgeInterceptor (桥接拦截器)"></a>2. BridgeInterceptor (桥接拦截器)</h3><p>负责把用户构造的请求转换为发送到服务器的请求、把服务器返回的响应转换为用户友好的响应。</p><ol><li>如果这个请求有请求体，就添加 Content-Type, Content-Length等。</li><li>如果这个请求没有 Host，就通过 url 来获取 Host 值添加到 Header中。 </li><li>如果这个请求没有接收的数据类型Accept-Encoding，且没指定接收的数据范围，就添加默认接受格式为 gzip。</li><li>去 CookieJar 中根据 url 查询 Cookie 添加到 Header。</li><li>如果当前没有，就添加 User-Agent 信息。 发起请求后： </li><li>解析响应 Header 中的 Cookie </li><li>如果想要数据的格式是 gzip，就创建 GzipSource 进行解压，同时移除 Content-Encoding 和 Content-Length</li></ol><h3 id="3-CacheInterceptor-缓存拦截器"><a href="#3-CacheInterceptor-缓存拦截器" class="headerlink" title="3. CacheInterceptor (缓存拦截器)"></a>3. CacheInterceptor (缓存拦截器)</h3><ol><li>根据Request和之前缓存的Response得到CacheStrategy </li><li>根据CacheStrategy决定是请求网络还是直接返回缓存 </li><li>如果 step 2中决定请求网络，则在这一步将返回的网络响应和本地缓存对比，对本地缓存进行改增删操作</li></ol><h3 id="4-ConnectInterceptor-连接拦截器"><a href="#4-ConnectInterceptor-连接拦截器" class="headerlink" title="4. ConnectInterceptor (连接拦截器)"></a>4. ConnectInterceptor (连接拦截器)</h3><p>okhttp内部维护了可以重复使用的 Socket 连接池，减少握手次数，加快请求响应。</p><ol><li>连接 RealConnection 是对 Socket 的封装。</li><li>OkHttp 的连接复用主要是通过 StreamAllocation 来实现的，每个连接上持有一个。</li><li>StreamAllocation 引用的列表，以此来标识当前连接是否空闲。它里面维护了List<Reference>的引用。List中StreamAllocation的数量也就是socket被引用的计数，如果计数为0的话，说明此连接没有被使用就是空闲的，需要通过下文的算法实现回收；如果计数不为0，则表示上层代码仍然引用，就不需要关闭连接。</li><li>判断连接是否可以重用，除了比较连接当前的 host，也可以比较路由信息。 </li><li>连接池在添加新连接时会运行清理任务，默认最多空闲连接为 5，最长空闲时间为 5 分钟。</li></ol><h3 id="5-CallServerInterceptor-读写拦截器"><a href="#5-CallServerInterceptor-读写拦截器" class="headerlink" title="5. CallServerInterceptor(读写拦截器)"></a>5. CallServerInterceptor(读写拦截器)</h3><p>负责实现网络 IO，所有拦截器都要依赖它才能拿到响应数据。</p><ol><li>CallServerInterceptor 首先会将请求中的 header 写给服务器。</li><li>如果有请求体的话，会再将 body 发送给服务器。 </li><li>最后通过httpCodec.finishRequest() 结束 http 请求的发送。 </li><li>然后从连接中读取服务器的响应，并构造 Response。</li><li>如果请求的 header或服务器响应的 header 中，Connection 的值为 close，就关闭连接。</li><li>最后返回 Response。</li></ol>]]></content>
     
@@ -82,6 +86,8 @@
     
     
     
+    <category term="Android" scheme="http://geekbug.xyz/categories/Android/"/>
+    
     
     <category term="Android" scheme="http://geekbug.xyz/tags/Android/"/>
     
@@ -92,7 +98,7 @@
     <link href="http://geekbug.xyz/2021/08/19/Android-app-start/"/>
     <id>http://geekbug.xyz/2021/08/19/Android-app-start/</id>
     <published>2021-08-19T10:22:25.000Z</published>
-    <updated>2021-08-19T10:30:23.840Z</updated>
+    <updated>2021-08-20T08:57:51.231Z</updated>
     
     <content type="html"><![CDATA[<p>App的启动流程：</p><ol><li>点击桌面 App 图标，Launcher 进程采用 Binder IPC 向 system_server 进程发起 startActivity 请求；</li><li>system_server 进程接收到请求后，向 zygote 进程发起创建进程的请求；</li><li>Zygote 进程 fork 出新的子进程，即 App 进程；</li><li>App 进程，通过 Binder IPC 向 system_server 进程发起 attachApplication 请求；</li><li>system_server 进程在收到请求后，进行一系列准备工作后，再通过 binder IPC 向 App 进程发送 scheduleLaunchActivity 请求；</li><li>App 进程的 binder 线程 (ApplicationThread) 在收到请求后，通过 handler 向主线程发送 LAUNCH_ACTIVITY 消息；</li><li>主线程在收到 Message 后，通过发射机制创建目标 Activity，并回调 Activity.onCreate() 等方法；</li><li>App 正式启动，开始进入 Activity 生命周期，执行完 onCreate/onStart/onResume 方法，UI 渲染结束后便可以看到 App 的主界面。</li></ol>]]></content>
     
@@ -107,6 +113,8 @@
     
     
     
+    <category term="Android" scheme="http://geekbug.xyz/categories/Android/"/>
+    
     
     <category term="Android" scheme="http://geekbug.xyz/tags/Android/"/>
     
@@ -117,7 +125,7 @@
     <link href="http://geekbug.xyz/2021/08/19/Android-apk-install/"/>
     <id>http://geekbug.xyz/2021/08/19/Android-apk-install/</id>
     <published>2021-08-19T09:10:29.000Z</published>
-    <updated>2021-08-19T09:14:40.826Z</updated>
+    <updated>2021-08-20T08:57:45.619Z</updated>
     
     <content type="html"><![CDATA[<p>Apk 安装的主要步骤：</p><ol><li>将 apk 文件复制到 <code>data/app</code> 目录</li><li>解析 apk 信息</li><li>dexopt 操作</li><li>更新权限信息</li><li>完成安装，发送 <code>Intent.Action_PACKAGE_ADDED</code> 广播</li></ol>]]></content>
     
@@ -134,6 +142,8 @@
       
     
     
+    
+    <category term="Android" scheme="http://geekbug.xyz/categories/Android/"/>
     
     
     <category term="Android" scheme="http://geekbug.xyz/tags/Android/"/>
