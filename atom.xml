@@ -6,7 +6,7 @@
   <link href="http://geekbug.xyz/atom.xml" rel="self"/>
   
   <link href="http://geekbug.xyz/"/>
-  <updated>2021-08-19T10:43:44.035Z</updated>
+  <updated>2021-08-20T07:10:57.583Z</updated>
   <id>http://geekbug.xyz/</id>
   
   <author>
@@ -15,6 +15,30 @@
   </author>
   
   <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>Android开发-Retrofit流程</title>
+    <link href="http://geekbug.xyz/2021/08/20/Android-Retrofit-process/"/>
+    <id>http://geekbug.xyz/2021/08/20/Android-Retrofit-process/</id>
+    <published>2021-08-20T07:06:17.000Z</published>
+    <updated>2021-08-20T07:10:57.583Z</updated>
+    
+    <content type="html"><![CDATA[<p>最近我将Retrofit源码进行了剖析，并做了流程图如下：</p><p><img src="https://tva1.sinaimg.cn/large/008i3skNly1gtn9u2z99xj60qy0w70uw02.jpg"></p>]]></content>
+    
+    
+      
+      
+    <summary type="html">&lt;p&gt;最近我将Retrofit源码进行了剖析，并做了流程图如下：&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;https://tva1.sinaimg.cn/large/008i3skNly1gtn9u2z99xj60qy0w70uw02.jpg&quot;&gt;&lt;/p&gt;
+</summary>
+      
+    
+    
+    
+    
+    <category term="Android" scheme="http://geekbug.xyz/tags/Android/"/>
+    
+  </entry>
   
   <entry>
     <title>Android开发-OkHttp拦截器</title>
