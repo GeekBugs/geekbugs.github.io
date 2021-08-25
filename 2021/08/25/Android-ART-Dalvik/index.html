@@ -20,30 +20,28 @@
   <link rel="stylesheet" href="https://cdn.jsdelivr.net/npm/animate.css@3.1.1/animate.min.css" integrity="sha256-PR7ttpcvz8qrF57fur/yAx1qXMFJeJFiA6pSzWi0OIE=" crossorigin="anonymous">
 
 <script class="next-config" data-name="main" type="application/json">{"hostname":"geekbug.xyz","root":"/","images":"/images","scheme":"Pisces","version":"8.7.0","exturl":false,"sidebar":{"position":"left","display":"post","padding":18,"offset":12},"copycode":false,"bookmark":{"enable":false,"color":"#222","save":"auto"},"fancybox":false,"mediumzoom":false,"lazyload":false,"pangu":false,"comments":{"style":"tabs","active":null,"storage":true,"lazyload":false,"nav":null},"motion":{"enable":true,"async":false,"transition":{"post_block":"fadeIn","post_header":"fadeInDown","post_body":"fadeInDown","coll_header":"fadeInLeft","sidebar":"fadeInUp"}},"prism":false,"i18n":{"placeholder":"搜索...","empty":"没有找到任何搜索结果：${query}","hits_time":"找到 ${hits} 个搜索结果（用时 ${time} 毫秒）","hits":"找到 ${hits} 个搜索结果"},"path":"/search.xml","localsearch":{"enable":true,"trigger":"auto","top_n_per_article":1,"unescape":false,"preload":false}}</script><script src="/js/config.js"></script>
-<meta name="description" content="最近我将Retrofit源码进行了剖析，并做了流程图如下：">
+<meta name="description" content="本文介绍了ART虚拟机与Dalvik虚拟机">
 <meta property="og:type" content="article">
-<meta property="og:title" content="Android开发-Retrofit流程">
-<meta property="og:url" content="http://geekbug.xyz/2021/08/20/Android-Retrofit-process/index.html">
+<meta property="og:title" content="Android开发-ART虚拟机与Dalvik虚拟机">
+<meta property="og:url" content="http://geekbug.xyz/2021/08/25/Android-ART-Dalvik/index.html">
 <meta property="og:site_name" content="GeekBug Code">
-<meta property="og:description" content="最近我将Retrofit源码进行了剖析，并做了流程图如下：">
+<meta property="og:description" content="本文介绍了ART虚拟机与Dalvik虚拟机">
 <meta property="og:locale" content="zh_CN">
-<meta property="og:image" content="https://tva1.sinaimg.cn/large/008i3skNly1gtn9u2z99xj60qy0w70uw02.jpg">
-<meta property="article:published_time" content="2021-08-20T07:06:17.000Z">
-<meta property="article:modified_time" content="2021-08-20T08:58:08.567Z">
+<meta property="article:published_time" content="2021-08-25T03:52:24.000Z">
+<meta property="article:modified_time" content="2021-08-25T03:58:28.060Z">
 <meta property="article:author" content="GeekBug">
 <meta property="article:tag" content="Android">
 <meta name="twitter:card" content="summary">
-<meta name="twitter:image" content="https://tva1.sinaimg.cn/large/008i3skNly1gtn9u2z99xj60qy0w70uw02.jpg">
 
 
-<link rel="canonical" href="http://geekbug.xyz/2021/08/20/Android-Retrofit-process/">
+<link rel="canonical" href="http://geekbug.xyz/2021/08/25/Android-ART-Dalvik/">
 
 
 
-<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"http://geekbug.xyz/2021/08/20/Android-Retrofit-process/","path":"2021/08/20/Android-Retrofit-process/","title":"Android开发-Retrofit流程"}</script>
+<script class="next-config" data-name="page" type="application/json">{"sidebar":"","isHome":false,"isPost":true,"lang":"zh-CN","comments":true,"permalink":"http://geekbug.xyz/2021/08/25/Android-ART-Dalvik/","path":"2021/08/25/Android-ART-Dalvik/","title":"Android开发-ART虚拟机与Dalvik虚拟机"}</script>
 
 <script class="next-config" data-name="calendar" type="application/json">""</script>
-<title>Android开发-Retrofit流程 | GeekBug Code</title>
+<title>Android开发-ART虚拟机与Dalvik虚拟机 | GeekBug Code</title>
   
 
   <script src="/js/third-party/analytics/baidu-analytics.js"></script>
@@ -139,7 +137,7 @@
 
   <aside class="sidebar">
 
-    <div class="sidebar-inner sidebar-overview-active">
+    <div class="sidebar-inner sidebar-nav-active sidebar-toc-active">
       <ul class="sidebar-nav">
         <li class="sidebar-nav-toc">
           文章目录
@@ -152,6 +150,7 @@
       <div class="sidebar-panel-container">
         <!--noindex-->
         <div class="post-toc-wrap sidebar-panel">
+            <div class="post-toc animated"><ol class="nav"><li class="nav-item nav-level-4"><a class="nav-link" href="#ART%E8%99%9A%E6%8B%9F%E6%9C%BA%E4%B8%8EDalvik%E8%99%9A%E6%8B%9F%E6%9C%BA%E7%9A%84%E5%8C%BA%E5%88%AB"><span class="nav-number">1.</span> <span class="nav-text">ART虚拟机与Dalvik虚拟机的区别</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#%E4%BB%80%E4%B9%88%E6%98%AFDalvik%E8%99%9A%E6%8B%9F%E6%9C%BA%EF%BC%9F"><span class="nav-number">1.1.</span> <span class="nav-text">什么是Dalvik虚拟机？</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#Dalvik%E8%99%9A%E6%8B%9F%E6%9C%BA%E7%9A%84%E7%89%B9%E7%82%B9"><span class="nav-number">1.2.</span> <span class="nav-text">Dalvik虚拟机的特点:</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E4%BB%80%E4%B9%88%E6%98%AFART%EF%BC%9F"><span class="nav-number">1.3.</span> <span class="nav-text">什么是ART？</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#ART%E4%BC%98%E7%82%B9%EF%BC%9A"><span class="nav-number">1.4.</span> <span class="nav-text">ART优点：</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#ART%E7%BC%BA%E7%82%B9%EF%BC%9A"><span class="nav-number">1.5.</span> <span class="nav-text">ART缺点：</span></a></li></ol></li><li class="nav-item nav-level-4"><a class="nav-link" href="#ART%E8%99%9A%E6%8B%9F%E6%9C%BA%E7%9B%B8%E5%AF%B9%E4%BA%8EDalvik%E8%99%9A%E6%8B%9F%E6%9C%BA%E7%9A%84%E6%8F%90%E5%8D%87"><span class="nav-number">2.</span> <span class="nav-text">ART虚拟机相对于Dalvik虚拟机的提升</span></a><ol class="nav-child"><li class="nav-item nav-level-5"><a class="nav-link" href="#%E9%A2%84%E7%BC%96%E8%AF%91"><span class="nav-number">2.1.</span> <span class="nav-text">预编译</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E5%9E%83%E5%9C%BE%E5%9B%9E%E6%94%B6%E6%9C%BA%E5%88%B6"><span class="nav-number">2.2.</span> <span class="nav-text">垃圾回收机制</span></a></li><li class="nav-item nav-level-5"><a class="nav-link" href="#%E6%8F%90%E9%AB%98%E5%86%85%E5%AD%98%E4%BD%BF%E7%94%A8%EF%BC%8C%E5%87%8F%E5%B0%91%E7%A2%8E%E7%89%87%E5%8C%96"><span class="nav-number">2.3.</span> <span class="nav-text">提高内存使用，减少碎片化</span></a></li></ol></li></ol></li><li class="nav-item nav-level-3"><a class="nav-link"><span class="nav-number"></span> <span class="nav-text"></span></a></div>
         </div>
         <!--/noindex-->
 
@@ -229,7 +228,7 @@
   
 
   <article itemscope itemtype="http://schema.org/Article" class="post-content" lang="zh-CN">
-    <link itemprop="mainEntityOfPage" href="http://geekbug.xyz/2021/08/20/Android-Retrofit-process/">
+    <link itemprop="mainEntityOfPage" href="http://geekbug.xyz/2021/08/25/Android-ART-Dalvik/">
 
     <span hidden itemprop="author" itemscope itemtype="http://schema.org/Person">
       <meta itemprop="image" content="/images/avatar.jpg">
@@ -242,7 +241,7 @@
     </span>
       <header class="post-header">
         <h1 class="post-title" itemprop="name headline">
-          Android开发-Retrofit流程
+          Android开发-ART虚拟机与Dalvik虚拟机
         </h1>
 
         <div class="post-meta-container">
@@ -254,7 +253,7 @@
       <span class="post-meta-item-text">发表于</span>
       
 
-      <time title="创建时间：2021-08-20 15:06:17 / 修改时间：16:58:08" itemprop="dateCreated datePublished" datetime="2021-08-20T15:06:17+08:00">2021-08-20</time>
+      <time title="创建时间：2021-08-25 11:52:24 / 修改时间：11:58:28" itemprop="dateCreated datePublished" datetime="2021-08-25T11:52:24+08:00">2021-08-25</time>
     </span>
     <span class="post-meta-item">
       <span class="post-meta-item-icon">
@@ -283,9 +282,53 @@
     
     
     <div class="post-body" itemprop="articleBody">
-        <p>最近我将Retrofit源码进行了剖析，并做了流程图如下：</p>
-<p><img src="https://tva1.sinaimg.cn/large/008i3skNly1gtn9u2z99xj60qy0w70uw02.jpg"></p>
+        <blockquote>
+<p>本文介绍了ART虚拟机与Dalvik虚拟机</p>
+</blockquote>
+ <span id="more"></span>
 
+<h4 id="ART虚拟机与Dalvik虚拟机的区别"><a href="#ART虚拟机与Dalvik虚拟机的区别" class="headerlink" title="ART虚拟机与Dalvik虚拟机的区别"></a>ART虚拟机与Dalvik虚拟机的区别</h4><h5 id="什么是Dalvik虚拟机？"><a href="#什么是Dalvik虚拟机？" class="headerlink" title="什么是Dalvik虚拟机？"></a>什么是Dalvik虚拟机？</h5><p>Dalvik是Google公司自己设计用于Android平台的Java虚拟机，它是Android平台的重要组成部分，支持dex格式的Java应用程序的运行。dex格式是专门为Dalvik设计的一种压缩格式，适合内存和处理器速度有限的系统。Google对其进行了特定的优化，是的Dalvik具有<strong>高效、简洁、节省资源</strong>的特点。从Android系统架构图知，Dalvik虚拟机运行在Android的运行时库层。</p>
+<p>Dalvik作为面向Linux、为嵌入式操作系统设计的虚拟机，主要负责完成对象生命周期、堆栈管理、线程管理、安全和异常管理，以及垃圾回收等。另外，Dalvik早期并没有JIT编译器，知道Android2.2才加入了对JIT的技术支持。</p>
+<h5 id="Dalvik虚拟机的特点"><a href="#Dalvik虚拟机的特点" class="headerlink" title="Dalvik虚拟机的特点:"></a>Dalvik虚拟机的特点:</h5><p>体积小，占用内存空间小。</p>
+<p>专有的DEX可执行文件格式，体积更小，执行速度更快。</p>
+<p>常量池采用32位索引值，寻址类方法名、字段名，常量更快。。</p>
+<p>基于寄存器架构，并拥有一套完整的指令系统。</p>
+<p>提供了对象生命周期管理，堆栈管理，线程管理，安全和异常管理以及垃圾回收等重要功能。</p>
+<p>所有的Android程序都运行在Android系统进程里，每个进程对应着一个Dalvik虚拟机实例。</p>
+<h5 id="什么是ART？"><a href="#什么是ART？" class="headerlink" title="什么是ART？"></a>什么是ART？</h5><p>ART代表Android Runtime，其处理应用程序执行的方式完全不同于Dalvik，Dalvik是依靠一个Just-In-Time（JIT）编译器去解释字节码。开发者编译后的应用代码需要通过一个解释器在用户的设备上运行，这一机制并不高效，但让应用能更容易在不同硬件和架构上运行。ART则完全改变了这套做法，在应用安装时就预编译字节码到机器语言，这一机制叫Ahead-Of-Time（AOT）编译。在移除解释代码这一过程后，应用程序执行将更加效率。启动更快。</p>
+<h5 id="ART优点："><a href="#ART优点：" class="headerlink" title="ART优点："></a>ART优点：</h5><ol>
+<li>系统性能的显著提升。</li>
+<li>应用启动更快、运行更快、体验更流畅、触摸反馈更及时。</li>
+<li>更长的电池续航能力</li>
+<li>支持更低的硬件。</li>
+</ol>
+<h5 id="ART缺点："><a href="#ART缺点：" class="headerlink" title="ART缺点："></a>ART缺点：</h5><ol>
+<li>更大的存储空间占用，可能会增加10%-20%</li>
+<li>更长的应用安装时间</li>
+</ol>
+<h4 id="ART虚拟机相对于Dalvik虚拟机的提升"><a href="#ART虚拟机相对于Dalvik虚拟机的提升" class="headerlink" title="ART虚拟机相对于Dalvik虚拟机的提升"></a>ART虚拟机相对于Dalvik虚拟机的提升</h4><h5 id="预编译"><a href="#预编译" class="headerlink" title="预编译"></a>预编译</h5><p>在Dalvik中，如同其他大多数JVM一样，都采用的是JIT来做及时翻译（动态翻译），将dex或odex中并排的Dalvik code（或者叫smali指令集）运行态翻译成native code去执行。JIT的引入使得Dalvik提升了3-6倍的性能。</p>
+<p>而在ART中，完全抛弃了Dalvik的JIT，使用了AOT直接在安装时将其完全翻译成native code。这一技术的引入，使得虚拟机执行指令的速度又一重大提升。</p>
+<h5 id="垃圾回收机制"><a href="#垃圾回收机制" class="headerlink" title="垃圾回收机制"></a>垃圾回收机制</h5><p>首先介绍下Dalvik的GC过程，主要有四个过程：</p>
+<ol>
+<li>当GC被触发时候，其会去查找所有活动的对象，这个时候整个程序与虚拟机内部的所有线程就会挂起，这样目的是在较少的堆栈里找到所引用的对象。</li>
+<li>GC对符合条件的对象进行标记。</li>
+<li>GC对标记的对象进行回收。</li>
+<li>恢复所有线程的执行现场继续运行。</li>
+</ol>
+<p><strong>Dalvik这么做的好处是，当pause了之后，GC势必是相当快速的，但是如果出现GC频繁并且内存吃紧势必会导致UI卡顿、掉帧、操作不流畅等等。</strong></p>
+<p>后来ART改善了这种GC方式，主要的改善点在将其<strong>非并发过程改成了部分并发，还有就是对内存的重新分配管理。</strong></p>
+<p>当ART GC发生时：</p>
+<ol>
+<li>GC将会锁住Java堆，扫描并进行标记。</li>
+<li>标记完毕释放掉Java堆的锁，并且挂起所有线程。</li>
+<li>GC对标记的对象进行回收。</li>
+<li>恢复所有线程的执行继续运行。</li>
+<li><strong>重复2-4直到结束。</strong></li>
+</ol>
+<p>可以看出整个过程做到了部分并发使得时间缩短，GC效率提高两倍。</p>
+<h5 id="提高内存使用，减少碎片化"><a href="#提高内存使用，减少碎片化" class="headerlink" title="提高内存使用，减少碎片化"></a>提高内存使用，减少碎片化</h5><p>Dalvik内存管理特点是：内存碎片化严重，当然这也是标记清除算法带来的弊端。</p>
+<p><strong>ART的解决：</strong> 在ART中，它将Java分了一块空间命名为 Large-Object-Space，这个内存空间的引入用来专文存放大对象，同时ART又引入了 moving collector 的技术，即将不连续的物理内存快进行对齐。对齐之后内存碎片化就得到了很好的解决。Large-Object-Space的引入是因为moving collector对大块内存的位移时间成本太高。据官方统计，ART的内存利用率提高了10倍左右，大大提高了内存的利用率。</p>
+<h3 id=""><a href="#" class="headerlink" title=""></a></h3>
     </div>
 
     
@@ -301,14 +344,11 @@
 
           <div class="post-nav">
             <div class="post-nav-item">
-                <a href="/2021/08/19/Android-okhttp-Interceptor/" rel="prev" title="Android开发-OkHttp拦截器">
-                  <i class="fa fa-chevron-left"></i> Android开发-OkHttp拦截器
+                <a href="/2021/08/20/Android-EventBus/" rel="prev" title="Android开发-EventBus流程">
+                  <i class="fa fa-chevron-left"></i> Android开发-EventBus流程
                 </a>
             </div>
             <div class="post-nav-item">
-                <a href="/2021/08/20/Android-EventBus/" rel="next" title="Android开发-EventBus流程">
-                  Android开发-EventBus流程 <i class="fa fa-chevron-right"></i>
-                </a>
             </div>
           </div>
     </footer>
