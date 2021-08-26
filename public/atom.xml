@@ -1,0 +1,222 @@
+<?xml version="1.0" encoding="utf-8"?>
+<feed xmlns="http://www.w3.org/2005/Atom">
+  <title>GeekBug Code</title>
+  
+  
+  <link href="http://geekbug.xyz/atom.xml" rel="self"/>
+  
+  <link href="http://geekbug.xyz/"/>
+  <updated>2021-08-25T06:10:40.919Z</updated>
+  <id>http://geekbug.xyz/</id>
+  
+  <author>
+    <name>GeekBug</name>
+    
+  </author>
+  
+  <generator uri="https://hexo.io/">Hexo</generator>
+  
+  <entry>
+    <title>Android开发-进程保活</title>
+    <link href="http://geekbug.xyz/2021/08/25/Android-process/"/>
+    <id>http://geekbug.xyz/2021/08/25/Android-process/</id>
+    <published>2021-08-25T06:03:44.000Z</published>
+    <updated>2021-08-25T06:10:40.919Z</updated>
+    
+    <content type="html"><![CDATA[<blockquote><p>这是一篇关于进程保活的总结文章</p></blockquote><span id="more"></span><h4 id="保活的两个方案"><a href="#保活的两个方案" class="headerlink" title="保活的两个方案"></a>保活的两个方案</h4><ul><li>提高进程优先级，降低进程被杀死的概率</li><li>在进程被杀死后，进行拉活</li></ul><h4 id="进程的优先级，划分五级："><a href="#进程的优先级，划分五级：" class="headerlink" title="进程的优先级，划分五级："></a>进程的优先级，划分五级：</h4><ol><li>前台进程（Foreground process）</li><li>可见进程（Visible process）</li><li>服务进程（Service process）</li><li>后台进程（Background process）</li><li>空进程（Empty process）</li></ol><h5 id="前台进程一般有以下特点："><a href="#前台进程一般有以下特点：" class="headerlink" title="前台进程一般有以下特点："></a><strong>前台进程一般有以下特点：</strong></h5><ul><li>拥有用户正在交互的Activity（已调用onResume）</li><li>拥有某个Service，后者绑定到用户正在交互的Activity</li><li>拥有正在前台运行的Service（服务已调用startForeground）</li><li>拥有一个正执行生命周期回调的Service（onCreate，onStart或onDestory）</li><li>拥有其正执行其onReceive()方法的BroadcastReceiver</li></ul><h4 id="提高进程优先级"><a href="#提高进程优先级" class="headerlink" title="提高进程优先级"></a>提高进程优先级</h4><ul><li><p>利用Activity提升权限</p><p>监控手机锁屏解锁事件，在屏幕锁屏时启动1像素的Activity，在用户解锁时将Activity销毁，注意该Activity需设计成用户无感知。</p></li><li><p>Notification提升权限</p><p>Android中Service的优先级为4，通过setForeground接口可以将后台Service设置为前台Service，使进程的优先级由4提升为2，从而是进程的优先级仅仅低于用户当前正在交互的进程，与可见进程优先级一致，使进程被杀死的概率大大降低。</p></li></ul><h4 id="进程死后拉活"><a href="#进程死后拉活" class="headerlink" title="进程死后拉活"></a>进程死后拉活</h4><ul><li><p>利用系统广播拉活</p><p>在发生特定系统事件时，系统会发出相应的广播，通过在AndroidManifest中静态注册对应的广播监听器，即可在发生响应事件时拉活。</p></li><li><p>利用第三方应用广播拉活</p><p>该方案总的设计思想与接收系统广播类似，不同的是该方案为接收第三方Top应用广播。通过反编译第三方Top应用，如微信、支付宝等等，找出它们外发的广播，在应用中进行监听，这样当这些应用发出广播时，就会将我们的应用拉活。</p></li><li><p>利用系统Service机制拉活</p><p>将Service设置为START_STICKY，利用系统机制在Service挂掉后自动拉活。</p></li><li><p>利用Native进程拉活</p><p>利用Linux中的fork机制创建Native进程，在Native进程中监控主进程的存活，当主进程挂掉后，在Native进程中立即对主进程进行拉活。</p><p>原理：在Android中所有进程和系统组件的生命周期受ActivityManagerService的统一管理。而且，通过Linux的fork机制创建的进程为纯Linux进程，其生命周期不受Android管理。</p></li><li><p>利用 JobScheduler机制拉活</p><p>在Android5.0以后系统对Native进程等加强了管理，Native拉活方式失效。系统在Android5.0以后版本提供了 JobScheduler接口，系统会定时调用该进程以使应用进行一些逻辑操作。</p></li><li><p>利用账号同步机制拉活</p><p>Android系统的账号同步机制会定期同步账号进行，该方案目的在于利用同步机制进行进程的拉活。</p></li></ul>]]></content>
+    
+    
+    <summary type="html">&lt;blockquote&gt;
+&lt;p&gt;这是一篇关于进程保活的总结文章&lt;/p&gt;
+&lt;/blockquote&gt;</summary>
+    
+    
+    
+    <category term="Android" scheme="http://geekbug.xyz/categories/Android/"/>
+    
+    
+    <category term="Android" scheme="http://geekbug.xyz/tags/Android/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>Android开发-ART虚拟机与Dalvik虚拟机</title>
+    <link href="http://geekbug.xyz/2021/08/25/Android-ART-Dalvik/"/>
+    <id>http://geekbug.xyz/2021/08/25/Android-ART-Dalvik/</id>
+    <published>2021-08-25T03:52:24.000Z</published>
+    <updated>2021-08-25T03:58:28.060Z</updated>
+    
+    <content type="html"><![CDATA[<blockquote><p>本文介绍了ART虚拟机与Dalvik虚拟机</p></blockquote> <span id="more"></span><h4 id="ART虚拟机与Dalvik虚拟机的区别"><a href="#ART虚拟机与Dalvik虚拟机的区别" class="headerlink" title="ART虚拟机与Dalvik虚拟机的区别"></a>ART虚拟机与Dalvik虚拟机的区别</h4><h5 id="什么是Dalvik虚拟机？"><a href="#什么是Dalvik虚拟机？" class="headerlink" title="什么是Dalvik虚拟机？"></a>什么是Dalvik虚拟机？</h5><p>Dalvik是Google公司自己设计用于Android平台的Java虚拟机，它是Android平台的重要组成部分，支持dex格式的Java应用程序的运行。dex格式是专门为Dalvik设计的一种压缩格式，适合内存和处理器速度有限的系统。Google对其进行了特定的优化，是的Dalvik具有<strong>高效、简洁、节省资源</strong>的特点。从Android系统架构图知，Dalvik虚拟机运行在Android的运行时库层。</p><p>Dalvik作为面向Linux、为嵌入式操作系统设计的虚拟机，主要负责完成对象生命周期、堆栈管理、线程管理、安全和异常管理，以及垃圾回收等。另外，Dalvik早期并没有JIT编译器，知道Android2.2才加入了对JIT的技术支持。</p><h5 id="Dalvik虚拟机的特点"><a href="#Dalvik虚拟机的特点" class="headerlink" title="Dalvik虚拟机的特点:"></a>Dalvik虚拟机的特点:</h5><p>体积小，占用内存空间小。</p><p>专有的DEX可执行文件格式，体积更小，执行速度更快。</p><p>常量池采用32位索引值，寻址类方法名、字段名，常量更快。。</p><p>基于寄存器架构，并拥有一套完整的指令系统。</p><p>提供了对象生命周期管理，堆栈管理，线程管理，安全和异常管理以及垃圾回收等重要功能。</p><p>所有的Android程序都运行在Android系统进程里，每个进程对应着一个Dalvik虚拟机实例。</p><h5 id="什么是ART？"><a href="#什么是ART？" class="headerlink" title="什么是ART？"></a>什么是ART？</h5><p>ART代表Android Runtime，其处理应用程序执行的方式完全不同于Dalvik，Dalvik是依靠一个Just-In-Time（JIT）编译器去解释字节码。开发者编译后的应用代码需要通过一个解释器在用户的设备上运行，这一机制并不高效，但让应用能更容易在不同硬件和架构上运行。ART则完全改变了这套做法，在应用安装时就预编译字节码到机器语言，这一机制叫Ahead-Of-Time（AOT）编译。在移除解释代码这一过程后，应用程序执行将更加效率。启动更快。</p><h5 id="ART优点："><a href="#ART优点：" class="headerlink" title="ART优点："></a>ART优点：</h5><ol><li>系统性能的显著提升。</li><li>应用启动更快、运行更快、体验更流畅、触摸反馈更及时。</li><li>更长的电池续航能力</li><li>支持更低的硬件。</li></ol><h5 id="ART缺点："><a href="#ART缺点：" class="headerlink" title="ART缺点："></a>ART缺点：</h5><ol><li>更大的存储空间占用，可能会增加10%-20%</li><li>更长的应用安装时间</li></ol><h4 id="ART虚拟机相对于Dalvik虚拟机的提升"><a href="#ART虚拟机相对于Dalvik虚拟机的提升" class="headerlink" title="ART虚拟机相对于Dalvik虚拟机的提升"></a>ART虚拟机相对于Dalvik虚拟机的提升</h4><h5 id="预编译"><a href="#预编译" class="headerlink" title="预编译"></a>预编译</h5><p>在Dalvik中，如同其他大多数JVM一样，都采用的是JIT来做及时翻译（动态翻译），将dex或odex中并排的Dalvik code（或者叫smali指令集）运行态翻译成native code去执行。JIT的引入使得Dalvik提升了3-6倍的性能。</p><p>而在ART中，完全抛弃了Dalvik的JIT，使用了AOT直接在安装时将其完全翻译成native code。这一技术的引入，使得虚拟机执行指令的速度又一重大提升。</p><h5 id="垃圾回收机制"><a href="#垃圾回收机制" class="headerlink" title="垃圾回收机制"></a>垃圾回收机制</h5><p>首先介绍下Dalvik的GC过程，主要有四个过程：</p><ol><li>当GC被触发时候，其会去查找所有活动的对象，这个时候整个程序与虚拟机内部的所有线程就会挂起，这样目的是在较少的堆栈里找到所引用的对象。</li><li>GC对符合条件的对象进行标记。</li><li>GC对标记的对象进行回收。</li><li>恢复所有线程的执行现场继续运行。</li></ol><p><strong>Dalvik这么做的好处是，当pause了之后，GC势必是相当快速的，但是如果出现GC频繁并且内存吃紧势必会导致UI卡顿、掉帧、操作不流畅等等。</strong></p><p>后来ART改善了这种GC方式，主要的改善点在将其<strong>非并发过程改成了部分并发，还有就是对内存的重新分配管理。</strong></p><p>当ART GC发生时：</p><ol><li>GC将会锁住Java堆，扫描并进行标记。</li><li>标记完毕释放掉Java堆的锁，并且挂起所有线程。</li><li>GC对标记的对象进行回收。</li><li>恢复所有线程的执行继续运行。</li><li><strong>重复2-4直到结束。</strong></li></ol><p>可以看出整个过程做到了部分并发使得时间缩短，GC效率提高两倍。</p><h5 id="提高内存使用，减少碎片化"><a href="#提高内存使用，减少碎片化" class="headerlink" title="提高内存使用，减少碎片化"></a>提高内存使用，减少碎片化</h5><p>Dalvik内存管理特点是：内存碎片化严重，当然这也是标记清除算法带来的弊端。</p><p><strong>ART的解决：</strong> 在ART中，它将Java分了一块空间命名为 Large-Object-Space，这个内存空间的引入用来专文存放大对象，同时ART又引入了 moving collector 的技术，即将不连续的物理内存快进行对齐。对齐之后内存碎片化就得到了很好的解决。Large-Object-Space的引入是因为moving collector对大块内存的位移时间成本太高。据官方统计，ART的内存利用率提高了10倍左右，大大提高了内存的利用率。</p><h3 id=""><a href="#" class="headerlink" title=""></a></h3>]]></content>
+    
+    
+    <summary type="html">&lt;blockquote&gt;
+&lt;p&gt;本文介绍了ART虚拟机与Dalvik虚拟机&lt;/p&gt;
+&lt;/blockquote&gt;</summary>
+    
+    
+    
+    <category term="Android" scheme="http://geekbug.xyz/categories/Android/"/>
+    
+    
+    <category term="Android" scheme="http://geekbug.xyz/tags/Android/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>Android开发-EventBus流程</title>
+    <link href="http://geekbug.xyz/2021/08/20/Android-EventBus/"/>
+    <id>http://geekbug.xyz/2021/08/20/Android-EventBus/</id>
+    <published>2021-08-20T08:43:24.000Z</published>
+    <updated>2021-08-20T08:57:56.121Z</updated>
+    
+    <content type="html"><![CDATA[<p>最近我对EventBus源码进行了分析，并绘制了流程图：</p><ol><li><p>EventBus register流程：</p><p><img src="https://tva1.sinaimg.cn/large/008i3skNly1gtnckrg6w3j60fa0qljse02.jpg"></p></li><li><p>EventBus post流程：</p></li></ol><p><img src="https://tva1.sinaimg.cn/large/008i3skNly1gtncktgjh3j60fy12atad02.jpg"></p>]]></content>
+    
+    
+      
+      
+    <summary type="html">&lt;p&gt;最近我对EventBus源码进行了分析，并绘制了流程图：&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;&lt;p&gt;EventBus register流程：&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;https://tva1.sinaimg.cn/large/008i3skNly1gtnckrg6w3j60</summary>
+      
+    
+    
+    
+    <category term="Android" scheme="http://geekbug.xyz/categories/Android/"/>
+    
+    
+    <category term="Android" scheme="http://geekbug.xyz/tags/Android/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>Android开发-Retrofit流程</title>
+    <link href="http://geekbug.xyz/2021/08/20/Android-Retrofit-process/"/>
+    <id>http://geekbug.xyz/2021/08/20/Android-Retrofit-process/</id>
+    <published>2021-08-20T07:06:17.000Z</published>
+    <updated>2021-08-20T08:58:08.567Z</updated>
+    
+    <content type="html"><![CDATA[<p>最近我将Retrofit源码进行了剖析，并做了流程图如下：</p><p><img src="https://tva1.sinaimg.cn/large/008i3skNly1gtn9u2z99xj60qy0w70uw02.jpg"></p>]]></content>
+    
+    
+      
+      
+    <summary type="html">&lt;p&gt;最近我将Retrofit源码进行了剖析，并做了流程图如下：&lt;/p&gt;
+&lt;p&gt;&lt;img src=&quot;https://tva1.sinaimg.cn/large/008i3skNly1gtn9u2z99xj60qy0w70uw02.jpg&quot;&gt;&lt;/p&gt;
+</summary>
+      
+    
+    
+    
+    <category term="Android" scheme="http://geekbug.xyz/categories/Android/"/>
+    
+    
+    <category term="Android" scheme="http://geekbug.xyz/tags/Android/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>Android开发-OkHttp拦截器</title>
+    <link href="http://geekbug.xyz/2021/08/19/Android-okhttp-Interceptor/"/>
+    <id>http://geekbug.xyz/2021/08/19/Android-okhttp-Interceptor/</id>
+    <published>2021-08-19T10:38:56.000Z</published>
+    <updated>2021-08-20T08:58:01.344Z</updated>
+    
+    <content type="html"><![CDATA[<h3 id="1-RetryAndFollowUpInterceptor-重定向拦截器"><a href="#1-RetryAndFollowUpInterceptor-重定向拦截器" class="headerlink" title="1. RetryAndFollowUpInterceptor (重定向拦截器)"></a>1. RetryAndFollowUpInterceptor (重定向拦截器)</h3><p>客户端向服务器发送一个请求，获取对应的资源，服务器收到请求后，发现请求的这个资源实际放在另一个位置，于是服务器在返回的响应头的Location字段中写入那个请求资源的正确的URL，并设置reponse的状态码为30x 。</p><ol><li>创建一个 StreamAllocation。 </li><li>调用下一个chain 。 </li><li>判断是否重定向。重定向会对request做一些修改，返回新的request，否则会返回null。</li><li>followUp == null 无重定向，释放资源，直接返回response。</li><li>比较重定向前后的 host、port、scheme是否一致，一致的话复用，否则重新创建 StreamAllocation。</li><li>通过 while (true) ，重复步骤 2</li></ol><h3 id="2-BridgeInterceptor-桥接拦截器"><a href="#2-BridgeInterceptor-桥接拦截器" class="headerlink" title="2. BridgeInterceptor (桥接拦截器)"></a>2. BridgeInterceptor (桥接拦截器)</h3><p>负责把用户构造的请求转换为发送到服务器的请求、把服务器返回的响应转换为用户友好的响应。</p><ol><li>如果这个请求有请求体，就添加 Content-Type, Content-Length等。</li><li>如果这个请求没有 Host，就通过 url 来获取 Host 值添加到 Header中。 </li><li>如果这个请求没有接收的数据类型Accept-Encoding，且没指定接收的数据范围，就添加默认接受格式为 gzip。</li><li>去 CookieJar 中根据 url 查询 Cookie 添加到 Header。</li><li>如果当前没有，就添加 User-Agent 信息。 发起请求后： </li><li>解析响应 Header 中的 Cookie </li><li>如果想要数据的格式是 gzip，就创建 GzipSource 进行解压，同时移除 Content-Encoding 和 Content-Length</li></ol><h3 id="3-CacheInterceptor-缓存拦截器"><a href="#3-CacheInterceptor-缓存拦截器" class="headerlink" title="3. CacheInterceptor (缓存拦截器)"></a>3. CacheInterceptor (缓存拦截器)</h3><ol><li>根据Request和之前缓存的Response得到CacheStrategy </li><li>根据CacheStrategy决定是请求网络还是直接返回缓存 </li><li>如果 step 2中决定请求网络，则在这一步将返回的网络响应和本地缓存对比，对本地缓存进行改增删操作</li></ol><h3 id="4-ConnectInterceptor-连接拦截器"><a href="#4-ConnectInterceptor-连接拦截器" class="headerlink" title="4. ConnectInterceptor (连接拦截器)"></a>4. ConnectInterceptor (连接拦截器)</h3><p>okhttp内部维护了可以重复使用的 Socket 连接池，减少握手次数，加快请求响应。</p><ol><li>连接 RealConnection 是对 Socket 的封装。</li><li>OkHttp 的连接复用主要是通过 StreamAllocation 来实现的，每个连接上持有一个。</li><li>StreamAllocation 引用的列表，以此来标识当前连接是否空闲。它里面维护了List<Reference>的引用。List中StreamAllocation的数量也就是socket被引用的计数，如果计数为0的话，说明此连接没有被使用就是空闲的，需要通过下文的算法实现回收；如果计数不为0，则表示上层代码仍然引用，就不需要关闭连接。</li><li>判断连接是否可以重用，除了比较连接当前的 host，也可以比较路由信息。 </li><li>连接池在添加新连接时会运行清理任务，默认最多空闲连接为 5，最长空闲时间为 5 分钟。</li></ol><h3 id="5-CallServerInterceptor-读写拦截器"><a href="#5-CallServerInterceptor-读写拦截器" class="headerlink" title="5. CallServerInterceptor(读写拦截器)"></a>5. CallServerInterceptor(读写拦截器)</h3><p>负责实现网络 IO，所有拦截器都要依赖它才能拿到响应数据。</p><ol><li>CallServerInterceptor 首先会将请求中的 header 写给服务器。</li><li>如果有请求体的话，会再将 body 发送给服务器。 </li><li>最后通过httpCodec.finishRequest() 结束 http 请求的发送。 </li><li>然后从连接中读取服务器的响应，并构造 Response。</li><li>如果请求的 header或服务器响应的 header 中，Connection 的值为 close，就关闭连接。</li><li>最后返回 Response。</li></ol>]]></content>
+    
+    
+      
+      
+    <summary type="html">&lt;h3 id=&quot;1-RetryAndFollowUpInterceptor-重定向拦截器&quot;&gt;&lt;a href=&quot;#1-RetryAndFollowUpInterceptor-重定向拦截器&quot; class=&quot;headerlink&quot; title=&quot;1. RetryAndFollowUpI</summary>
+      
+    
+    
+    
+    <category term="Android" scheme="http://geekbug.xyz/categories/Android/"/>
+    
+    
+    <category term="Android" scheme="http://geekbug.xyz/tags/Android/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>Android开发-App启动流程</title>
+    <link href="http://geekbug.xyz/2021/08/19/Android-app-start/"/>
+    <id>http://geekbug.xyz/2021/08/19/Android-app-start/</id>
+    <published>2021-08-19T10:22:25.000Z</published>
+    <updated>2021-08-20T08:57:51.231Z</updated>
+    
+    <content type="html"><![CDATA[<p>App的启动流程：</p><ol><li>点击桌面 App 图标，Launcher 进程采用 Binder IPC 向 system_server 进程发起 startActivity 请求；</li><li>system_server 进程接收到请求后，向 zygote 进程发起创建进程的请求；</li><li>Zygote 进程 fork 出新的子进程，即 App 进程；</li><li>App 进程，通过 Binder IPC 向 system_server 进程发起 attachApplication 请求；</li><li>system_server 进程在收到请求后，进行一系列准备工作后，再通过 binder IPC 向 App 进程发送 scheduleLaunchActivity 请求；</li><li>App 进程的 binder 线程 (ApplicationThread) 在收到请求后，通过 handler 向主线程发送 LAUNCH_ACTIVITY 消息；</li><li>主线程在收到 Message 后，通过发射机制创建目标 Activity，并回调 Activity.onCreate() 等方法；</li><li>App 正式启动，开始进入 Activity 生命周期，执行完 onCreate/onStart/onResume 方法，UI 渲染结束后便可以看到 App 的主界面。</li></ol>]]></content>
+    
+    
+      
+      
+    <summary type="html">&lt;p&gt;App的启动流程：&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;点击桌面 App 图标，Launcher 进程采用 Binder IPC 向 system_server 进程发起 startActivity 请求；&lt;/li&gt;
+&lt;li&gt;system_server 进程接收到请求后，向 zygo</summary>
+      
+    
+    
+    
+    <category term="Android" scheme="http://geekbug.xyz/categories/Android/"/>
+    
+    
+    <category term="Android" scheme="http://geekbug.xyz/tags/Android/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>Android开发-Apk安装步骤</title>
+    <link href="http://geekbug.xyz/2021/08/19/Android-apk-install/"/>
+    <id>http://geekbug.xyz/2021/08/19/Android-apk-install/</id>
+    <published>2021-08-19T09:10:29.000Z</published>
+    <updated>2021-08-20T08:57:45.619Z</updated>
+    
+    <content type="html"><![CDATA[<p>Apk 安装的主要步骤：</p><ol><li>将 apk 文件复制到 <code>data/app</code> 目录</li><li>解析 apk 信息</li><li>dexopt 操作</li><li>更新权限信息</li><li>完成安装，发送 <code>Intent.Action_PACKAGE_ADDED</code> 广播</li></ol>]]></content>
+    
+    
+      
+      
+    <summary type="html">&lt;p&gt;Apk 安装的主要步骤：&lt;/p&gt;
+&lt;ol&gt;
+&lt;li&gt;将 apk 文件复制到 &lt;code&gt;data/app&lt;/code&gt; 目录&lt;/li&gt;
+&lt;li&gt;解析 apk 信息&lt;/li&gt;
+&lt;li&gt;dexopt 操作&lt;/li&gt;
+&lt;li&gt;更新权限信息&lt;/li&gt;
+&lt;li&gt;完成安装，发送 &lt;co</summary>
+      
+    
+    
+    
+    <category term="Android" scheme="http://geekbug.xyz/categories/Android/"/>
+    
+    
+    <category term="Android" scheme="http://geekbug.xyz/tags/Android/"/>
+    
+  </entry>
+  
+  <entry>
+    <title>new</title>
+    <link href="http://geekbug.xyz/2021/08/18/new/"/>
+    <id>http://geekbug.xyz/2021/08/18/new/</id>
+    <published>2021-08-18T09:55:25.000Z</published>
+    <updated>2021-08-18T09:55:52.190Z</updated>
+    
+    <content type="html"><![CDATA[<p>新的篇章~</p>]]></content>
+    
+    
+      
+      
+    <summary type="html">&lt;p&gt;新的篇章~&lt;/p&gt;
+</summary>
+      
+    
+    
+    
+    
+    <category term="Life" scheme="http://geekbug.xyz/tags/Life/"/>
+    
+  </entry>
+  
+</feed>
